@@ -1,0 +1,69 @@
+{% extends 'partials/base.html' %}
+{% block title %}Домашняя страница{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="border p-3 shadow">
+    
+        <div class="alert alert-info">
+            <h2>Добавить новую задачу</h2>
+        </div>
+        <div class="p-4">
+            <div class="container">
+                <div>
+                    {% if exception == ''%}
+                    {% else %}
+                    <p style="color: red">{{ exception }}</p>
+                    {% endif %}
+                    
+                </div>
+                
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="title">Название задачи:</label>
+                        <input class="form-control" type="text" id='content' name="content">
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Приоритет:</label>
+                        <input class="form-control" type="number" id='priority' name="priority">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateStart">Дата начала:</label>
+                        <input class="form-control" type="datetime-local" id='dateStart' name="dateStart">
+                    </div>
+                    <div class="form-group">
+                        <label for="dateFinish">Дата завершения:</label>
+                        <input class="form-control" type="datetime-local" id='dateFinish' name="dateFinish">
+                    </div>
+                    <input class="btn btn-primary" type="submit">
+                </form>
+            </div>
+        
+    </div>
+    <hr>
+
+    {% for todo in todos %}
+    <div class="border bg-muted p-3 mb-3">
+        <p> <small>{{ todo.dateFinish }}</small></p>
+        <div class="row">
+            <div class="col-md-8">
+                {% if todo.complete == True %}
+                <p>
+                    <span class="btn btn-success btn-sm mr-2">
+                        <i class="far fa-check-circle"></i>
+                    </span></i>{{ todo.content }}
+                </p>
+                {% else %}
+                <p>{{ todo.content }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <a class="btn btn-info btn-sm mx-1" href="{% url 'todos-update' todo.id %}">Редактировать</a>
+                <a class="btn btn-danger btn-sm mx-1" href="{% url 'todos-delete' todo.id %}">Удалить</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

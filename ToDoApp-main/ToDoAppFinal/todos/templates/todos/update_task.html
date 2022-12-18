@@ -1,0 +1,16 @@
+{% extends 'partials/base.html' %}
+{% block title %}Редактирование заметки {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="border p-3">
+    <h4>Редактировать информацию</h4>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input class="btn btn-info btn-block" type="submit" value="Сохранить">
+        
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'partials/base.html' %}
+{% block title %}Редактировать заметку {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="border p-3">
+    <h4>Удалить заметку</h4>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="alert alert-danger">
+            <p>Название задачи: {{ name_task }}</p>
+            <p>Вы уверены, что хотите удалить задачу?</p>
+        </div>
+        <a class="btn btn-secondary btn-sm" href="{% url 'todos-index' %}">Отменить</a>
+        <input class="btn btn-danger btn-sm" type="submit" name="Confirm" value="Удалить!">
+    </form>
+</div>
+{% endblock %}
