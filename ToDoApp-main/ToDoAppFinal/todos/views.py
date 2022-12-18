@@ -34,6 +34,34 @@ def start_page(request):
         dateStart = request.POST['dateStart']
         # из запроса получаем дату завершения задачи
         dateFinish = request.POST['dateFinish']
+        if(int(priority) < 0 or int(priority) > 10):
+            print('Приоритет задачи от 0 до 10')
+            # в этом случае проверка нашла ошибку ввода и необходимо вернуть пользователю форму
+            form = TaskForm()
+            # контекст - переменные для отображания в html шаблоне
+            context = {
+                    'todos': todos,
+                    'count_todos': count_todos,
+                    'count_completed_todo': count_completed_todo,
+                    'uncompleted': uncompleted,
+                    'exception': 'Приоритет задачи от 0 до 10!',
+                    }
+            # отрисовка шаблона index.index и передача контекста переменных
+            return render(request, 'todos/index.html', context)
+        if(dateStart == '' or dateFinish == '' or priority == '' or content == ''):
+            print('Заполните дату!')
+            # в этом случае проверка нашла ошибку ввода и необходимо вернуть пользователю форму
+            form = TaskForm()
+            # контекст - переменные для отображания в html шаблоне
+            context = {
+                    'todos': todos,
+                    'count_todos': count_todos,
+                    'count_completed_todo': count_completed_todo,
+                    'uncompleted': uncompleted,
+                    'exception': 'Заполните название задачи, приоритет, дату начала и завершения',
+                    }
+            # отрисовка шаблона index.index и передача контекста переменных
+            return render(request, 'todos/index.html', context)
         # проверка что дата завершения не раньше даты начала
         if(datetime.strptime(dateStart,  "%Y-%m-%dT%H:%M").date() > datetime.strptime(dateFinish, "%Y-%m-%dT%H:%M").date()):
             print('Дата завершения не может быть раньше даты начала')
@@ -102,7 +130,22 @@ def update(request, pk):
         form = UpdateTaskForm(request.POST, instance=task)
         if form.is_valid(): # проверка, что форма целая
             try:
-                 # проверка что дата завершения не раньше даты начала
+                if(int(form.data.get('priority')) < 0 or int(form.data.get('priority')) > 10):
+                    print('Приоритет задачи от 0 до 10')
+                    # в этом случае проверка нашла ошибку ввода и необходимо вернуть пользователю форму
+                    # контекст - переменные для отображания в html шаблоне
+                    form.add_error(None, 'Приоритет задачи от 0 до 10!')
+                    context = {
+                    'todos': todos,
+                    'count_todos': count_todos,
+                    'count_completed_todo': count_completed_todo,
+                    'uncompleted': uncompleted,
+                    'exception': 'Приоритет задачи от 0 до 10!',
+                    }
+                    # отрисовка шаблона index.index и передача контекста переменных
+                    return render(request, 'todos/index.html', context)
+                    # проверка что дата завершения не раньше даты начала
+
                 if(int(form.data.get('dateFinish_year')) <= int(form.data.get('dateStart_year')) and int(form.data.get('dateFinish_month')) <= int(form.data.get('dateStart_month')) and int(form.data.get('dateFinish_day')) < int(form.data.get('dateStart_day'))):
                     # вывод сообщения, что дата завершения не корректная 
                     print('Сообщение об ошибке неправильной формы даты. Дата завершения должна быть позже чем сегодня', form.data.get('dateStart_day'))
